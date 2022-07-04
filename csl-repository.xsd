@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://purl.org/net/xbiblio/csl" xmlns:cs="http://purl.org/net/xbiblio/csl">
+  <xs:include schemaLocation="csl.xsd"/>
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xs:group name="dependent-style.style">
+    <xs:annotation>
+      <xs:documentation>Remove legacy attributes from cs:style of dependents</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="style">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="cs:dependent-style.style.info">
+              <xs:attributeGroup ref="cs:style.default-locale"/>
+              <xs:attributeGroup ref="cs:version"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:group name="independent-style.style.info">
+    <xs:annotation>
+      <xs:documentation>- Only allow cs:issn once
+- Require a cs:rights element
+- Forgo "interleave" (so the elements need to be in the order specified),
+  so that we can require
+  * one cs:link with "self"
+  * any number of cs:link with "template"
+  * at least one cs:link with "documentation"
+  * one cs:category with "citation-format"
+  * any number of cs:category with "field".
+Metadata for independent styles.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="info">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="cs:title"/>
+            <xs:element minOccurs="0" ref="cs:title-short"/>
+            <xs:element ref="cs:id"/>
+            <xs:group ref="cs:independent-style.info.link.self"/>
+            <xs:group minOccurs="0" maxOccurs="unbounded" ref="cs:independent-style.info.link.template"/>
+            <xs:group maxOccurs="unbounded" ref="cs:independent-style.info.link.documentation"/>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="cs:author"/>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="cs:contributor"/>
+            <xs:group ref="cs:info.category.citation-format"/>
+            <xs:group minOccurs="0" maxOccurs="unbounded" ref="cs:info.category.field"/>
+            <xs:element minOccurs="0" ref="cs:issn"/>
+            <xs:element minOccurs="0" ref="cs:eissn"/>
+            <xs:element minOccurs="0" ref="cs:issnl"/>
+            <xs:element minOccurs="0" ref="cs:summary"/>
+            <xs:element minOccurs="0" ref="cs:published"/>
+            <xs:element ref="cs:updated"/>
+            <xs:element ref="cs:rights"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:complexType name="dependent-style.style.info">
+    <xs:annotation>
+      <xs:documentation>- Only allow cs:issn once
+- Require a cs:rights element
+- Forgo "interleave" (so the elements need to be in the order specified),
+  so that we can require
+  * one cs:link with "self"
+  * one cs:link with "independent-parent"
+  * any number of cs:link with "documentation"
+  * one cs:category with "citation-format"
+  * any number of cs:category with "field".
+Metadata for dependent styles.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="info">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="cs:title"/>
+            <xs:element minOccurs="0" ref="cs:title-short"/>
+            <xs:element ref="cs:id"/>
+            <xs:group ref="cs:independent-style.info.link.self"/>
+            <xs:group ref="cs:independent-style.info.link.independent-parent"/>
+            <xs:group minOccurs="0" maxOccurs="unbounded" ref="cs:independent-style.info.link.documentation"/>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="cs:author"/>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="cs:contributor"/>
+            <xs:group ref="cs:info.category.citation-format"/>
+            <xs:group minOccurs="0" maxOccurs="unbounded" ref="cs:info.category.field"/>
+            <xs:element minOccurs="0" ref="cs:issn"/>
+            <xs:element minOccurs="0" ref="cs:eissn"/>
+            <xs:element minOccurs="0" ref="cs:issnl"/>
+            <xs:element minOccurs="0" ref="cs:summary"/>
+            <xs:element minOccurs="0" ref="cs:published"/>
+            <xs:element ref="cs:updated"/>
+            <xs:element ref="cs:rights"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="rights">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:restriction base="xs:anyType">
+          <xs:simpleType>
+            <xs:restriction base="xs:token">
+              <xs:enumeration value="This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License"/>
+            </xs:restriction>
+          </xs:simpleType>
+          <xs:attribute name="license" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:token">
+                <xs:enumeration value="http://creativecommons.org/licenses/by-sa/3.0/"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attributeGroup ref="xml:lang"/>
+        </xs:restriction>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="et-al">
+    <xs:annotation>
+      <xs:documentation>Specify the term used for et-al abbreviation and its formatting. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="term" default="et-al">
+        <xs:annotation>
+          <xs:documentation>Select the term to use for et-al abbreviation.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="et-al"/>
+            <xs:enumeration value="and others"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attributeGroup ref="cs:font-formatting"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:group name="independent-style.info.link.self">
+    <xs:sequence>
+      <xs:element name="link">
+        <xs:complexType mixed="true">
+          <xs:attribute name="href" use="required" type="xs:anyURI"/>
+          <xs:attribute name="rel" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:token">
+                <xs:enumeration value="self"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attributeGroup ref="cs:info-text"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:group name="independent-style.info.link.template">
+    <xs:sequence>
+      <xs:element name="link">
+        <xs:complexType mixed="true">
+          <xs:attribute name="href" use="required" type="xs:anyURI"/>
+          <xs:attribute name="rel" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:token">
+                <xs:enumeration value="template"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attributeGroup ref="cs:info-text"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:group name="independent-style.info.link.independent-parent">
+    <xs:sequence>
+      <xs:element name="link">
+        <xs:complexType mixed="true">
+          <xs:attribute name="href" use="required" type="xs:anyURI"/>
+          <xs:attribute name="rel" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:token">
+                <xs:enumeration value="independent-parent"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attributeGroup ref="cs:info-text"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:group name="independent-style.info.link.documentation">
+    <xs:sequence>
+      <xs:element name="link">
+        <xs:complexType mixed="true">
+          <xs:attribute name="href" use="required" type="xs:anyURI"/>
+          <xs:attribute name="rel" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:token">
+                <xs:enumeration value="documentation"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attributeGroup ref="cs:info-text"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:group name="info.category.citation-format">
+    <xs:sequence>
+      <xs:element name="category">
+        <xs:complexType>
+          <xs:attribute name="citation-format" use="required" type="cs:category.citation-format"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:group name="info.category.field">
+    <xs:sequence>
+      <xs:element name="category">
+        <xs:complexType>
+          <xs:attribute name="field" use="required" type="cs:category.field"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+</xs:schema>

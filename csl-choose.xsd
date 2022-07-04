@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://purl.org/net/xbiblio/csl" xmlns:cs="http://purl.org/net/xbiblio/csl">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xs:element name="choose">
+    <xs:annotation>
+      <xs:documentation>Use to conditionally render rendering elements.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="cs:if"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="cs:else-if"/>
+        <xs:element minOccurs="0" ref="cs:else"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="if">
+    <xs:complexType>
+      <xs:group minOccurs="0" maxOccurs="unbounded" ref="cs:rendering-element"/>
+      <xs:attributeGroup ref="cs:condition"/>
+      <xs:attributeGroup ref="cs:match"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="else-if">
+    <xs:complexType>
+      <xs:group minOccurs="0" maxOccurs="unbounded" ref="cs:rendering-element"/>
+      <xs:attributeGroup ref="cs:condition"/>
+      <xs:attributeGroup ref="cs:match"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="else">
+    <xs:complexType>
+      <xs:group maxOccurs="unbounded" ref="cs:rendering-element"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="condition">
+    <xs:attribute name="disambiguate">
+      <xs:annotation>
+        <xs:documentation>If used, the element content is only rendered if it disambiguates two
+otherwise identical citations. This attempt at disambiguation is only
+made after all other disambiguation methods have failed.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="true"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="is-numeric">
+      <xs:annotation>
+        <xs:documentation>Tests whether the given variables contain numeric text.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction>
+          <xs:simpleType>
+            <xs:list itemType="cs:variables"/>
+          </xs:simpleType>
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="is-uncertain-date">
+      <xs:annotation>
+        <xs:documentation>Tests whether the given date variables contain approximate dates.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction>
+          <xs:simpleType>
+            <xs:list itemType="cs:variables.dates"/>
+          </xs:simpleType>
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="locator">
+      <xs:annotation>
+        <xs:documentation>Tests whether the locator matches the given locator types.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction>
+          <xs:simpleType>
+            <xs:list itemType="cs:terms.locator"/>
+          </xs:simpleType>
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="position">
+      <xs:annotation>
+        <xs:documentation>Tests whether the cite position matches the given positions.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction>
+          <xs:simpleType>
+            <xs:list>
+              <xs:simpleType>
+                <xs:restriction base="xs:token">
+                  <xs:enumeration value="first"/>
+                  <xs:enumeration value="subsequent"/>
+                  <xs:enumeration value="ibid"/>
+                  <xs:enumeration value="ibid-with-locator"/>
+                  <xs:enumeration value="near-note"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:list>
+          </xs:simpleType>
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="type">
+      <xs:annotation>
+        <xs:documentation>Tests whether the item matches the given types.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction>
+          <xs:simpleType>
+            <xs:list itemType="cs:item-types"/>
+          </xs:simpleType>
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="variable">
+      <xs:annotation>
+        <xs:documentation>Tests whether the default ("long") forms of the given variables
+contain non-empty values.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction>
+          <xs:simpleType>
+            <xs:list itemType="cs:variables"/>
+          </xs:simpleType>
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="match">
+    <xs:attribute name="match" default="all">
+      <xs:annotation>
+        <xs:documentation>Set the testing logic.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="all">
+            <xs:annotation>
+              <xs:documentation>Element only tests "true" when all conditions test "true" for all
+given test values.</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="any">
+            <xs:annotation>
+              <xs:documentation>Element tests "true" when any condition tests "true" for any given
+test value.</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="none">
+            <xs:annotation>
+              <xs:documentation>Element only tests "true" when none of the conditions test "true"
+for any given test value.</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+</xs:schema>
